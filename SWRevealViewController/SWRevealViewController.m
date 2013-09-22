@@ -567,6 +567,31 @@ static NSString * const SWSegueRightIdentifier = @"sw_right";
     return UIInterfaceOrientationMaskAll;
 }
 
+
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+    UIStatusBarStyle returnValue;
+    
+    switch (_frontViewPosition) {
+
+        case FrontViewPositionLeftSide:
+        case FrontViewPositionLeftSideMost:
+        case FrontViewPositionLeftSideMostRemoved:
+            returnValue = [self.rightViewController preferredStatusBarStyle];
+            break;
+        case FrontViewPositionRight:
+        case FrontViewPositionRightMost:
+        case FrontViewPositionRightMostRemoved:
+            returnValue = [self.rearViewController preferredStatusBarStyle];
+            break;
+        case FrontViewPositionLeft:
+        default:
+            returnValue = [self.frontViewController preferredStatusBarStyle];
+            break;
+    }
+    return returnValue;
+}
+
 // Support for earlier than iOS 6.0
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -1097,6 +1122,10 @@ static NSString * const SWSegueRightIdentifier = @"sw_right";
         {
             if ( [_delegate respondsToSelector:@selector(revealController:didMoveToPosition:)] )
                 [_delegate revealController:self didMoveToPosition:newPosition];
+            
+            // iOS7 status bar text color updating when it depends on the viewcontroller currently displayed
+            if( [self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)] )
+                [self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
         }
     };
 
