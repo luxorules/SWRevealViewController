@@ -564,7 +564,18 @@ static NSString * const SWSegueRightIdentifier = @"sw_right";
 
 - (NSUInteger)supportedInterfaceOrientations
 {
+    if (self.frontViewController) {
+        return  [self.frontViewController supportedInterfaceOrientations];
+    }
     return UIInterfaceOrientationMaskPortrait;
+}
+
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
+{
+    if (self.frontViewController) {
+        return  [self.frontViewController preferredInterfaceOrientationForPresentation];
+    }
+    return  UIInterfaceOrientationPortrait;
 }
 
 
